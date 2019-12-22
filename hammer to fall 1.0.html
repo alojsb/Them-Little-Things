@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>hammer to fall 1.0</title>
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        body{
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    
+        #okvir{
+            border: 1px solid black;
+            height: 420px;
+            width: 100px;
+            background-color: orange;
+            transform: rotate(180deg);
+        }
+
+        #bar{
+            border: 1px solid black;
+            height: 400px;
+            width: 80px;
+            background-color: whitesmoke;
+            margin: auto;
+            margin-top: 9px;
+        }
+
+        #fill{
+            height: 80px;
+
+        }
+    
+    </style>
+</head>
+<body>
+    <div id="okvir">
+        <div id="bar">
+            <div id="fill"></div>
+        </div>
+    </div>
+
+    <script>
+    
+        var bar = document.getElementById('bar');
+        var fill = document.getElementById('fill');
+        var sirina = 0;
+        var mojInterval;
+        var flagUdesno = true;
+
+        fill.style.height = '0px';
+        fill.style.backgroundColor = 'red';
+
+        console.log(parseInt(fill.style.height));
+
+        document.body.addEventListener('click', function () {
+            if (mojInterval) {
+                clearInterval(mojInterval);
+            }
+            else{
+                mojInterval = setInterval(function () {
+                if (parseInt(fill.style.height) <= 400) {
+                    if (parseInt(fill.style.height) == 0) {
+                        flagUdesno = true;
+                        console.log("flag promijenjen da ide udesno");
+                    }
+                    else if(parseInt(fill.style.height) == 400){
+                        flagUdesno = false;
+                        console.log("flag promijenjen da ide ulijevo");
+                    }
+                    else{
+                        console.log("bio u else (niti 0 niti 400)");
+                    }
+                    if (flagUdesno == true) {
+                        sirina = sirina + 2;
+                    }
+                    else{
+                        sirina = sirina - 2;
+                    }
+                    fill.style.height = sirina + 'px';
+                }
+            }, 1);
+            }
+            
+            console.log(sirina);
+            console.log(fill.style.height);
+            console.log(flagUdesno);
+        });
+
+    </script>
+
+</body>
+</html>

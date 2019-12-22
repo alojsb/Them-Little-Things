@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>fishing bar 1.0</title>
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        body{
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    
+        #okvir{
+            border: 1px solid black;
+            width: 420px;
+            height: 100px;
+            background-color: orange;
+        }
+
+        #bar{
+            border: 1px solid black;
+            width: 400px;
+            height: 80px;
+            background-color: whitesmoke;
+            margin: auto;
+            margin-top: 9px;
+        }
+
+        #fill{
+            height: 80px;
+        }
+    
+    </style>
+</head>
+<body>
+    <div id="okvir">
+        <div id="bar">
+            <div id="fill"></div>
+        </div>
+    </div>
+
+    <script>
+    
+        var bar = document.getElementById('bar');
+        var fill = document.getElementById('fill');
+        var sirina = 0;
+        var mojInterval;
+        var flagUdesno = true;
+
+        fill.style.width = '0px';
+        fill.style.backgroundColor = 'red';
+
+
+
+        console.log(parseInt(fill.style.width));
+
+        document.body.addEventListener('mousedown', function () {
+            mojInterval = setInterval(function () {
+                if (parseInt(fill.style.width) <= 400) {
+                    if (parseInt(fill.style.width) == 0) {
+                        flagUdesno = true;
+                        console.log("flag promijenjen da ide udesno");
+                    }
+                    else if(parseInt(fill.style.width) == 400){
+                        flagUdesno = false;
+                        console.log("flag promijenjen da ide ulijevo");
+                    }
+                    else{
+                        console.log("bio u else (niti 0 niti 400)");
+                    }
+                    if (flagUdesno == true) {
+                        sirina = sirina + 2;
+                    }
+                    else{
+                        sirina = sirina - 2;
+                    }
+                    fill.style.width = sirina + 'px';
+                }
+            }, 1);
+            console.log(sirina);
+            console.log(fill.style.width);
+            console.log(flagUdesno);
+        });
+
+        document.body.addEventListener('mouseup', function () {
+            clearInterval(mojInterval);
+        });
+
+
+
+        // document.body.addEventListener('click', function () {
+        //     if (parseInt(fill.style.width) < 400) {
+        //         sirina++;
+        //         fill.style.width = sirina + 'px';
+        //     }
+        //     console.log(sirina);
+        //     console.log(fill.style.width);
+        // });
+
+// ------------------------------- samo za testiranje ------------------------------------------
+//         document.body.addEventListener("click", function (evt) {
+//     console.dir(this);
+//     //note evt.target can be a nested element, not the body element, resulting in misfires
+//     console.log(evt.target);
+//     alert("body clicked");
+// });
+
+    </script>
+
+</body>
+</html>
