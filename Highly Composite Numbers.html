@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Highly Composite Numbers</title>
+</head>
+<body>
+    <h3>Highly Composite Numbers</h3>
+    <p id="paper"></p>
+    <script>
+    
+        let x = 0;
+        let numberInArray = 1;
+        let memory = 0;
+        let upperBound = 10000;
+        let paper = document.getElementById('paper');
+
+        while (x < upperBound) {
+            x++;
+            let temp = x;
+            let counter = 0;
+
+            for (let i = 1; i < (temp / 2) + 2; i++) {    // can't divide with 0
+
+                if (temp % i == 0) {
+                    temp /= i;
+                    counter++;
+                }
+
+            }
+
+            if (counter > memory) {
+                memory = counter;
+                paper.innerText += numberInArray + ": " + x + "\n";
+                numberInArray++;
+                console.log("bio al ne hajem");
+            }
+        }
+    
+    </script>
+</body>
+</html>
