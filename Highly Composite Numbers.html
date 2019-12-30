@@ -14,7 +14,7 @@
         let x = 0;
         let numberInArray = 1;
         let memory = 0;
-        let upperBound = 10000;
+        let upperBound = 100000;
         let paper = document.getElementById('paper');
 
         while (x < upperBound) {
@@ -22,20 +22,22 @@
             let temp = x;
             let counter = 0;
 
-            for (let i = 1; i < (temp / 2) + 2; i++) {    // can't divide with 0
+            for (let i = 1; i <= (temp / 2); i++) {    // can't divide with 0
 
                 if (temp % i == 0) {
-                    temp /= i;
+                    //temp /= i;    // this makes for an interesting new (unintended) array
                     counter++;
                 }
-
             }
+
+            // account for every number being its own largest divisor
+            counter++;
 
             if (counter > memory) {
                 memory = counter;
+                //paper.innerText += counter + ": " + x + "\n"; // counter lists the number of divisors a HCN has
                 paper.innerText += numberInArray + ": " + x + "\n";
                 numberInArray++;
-                console.log("bio al ne hajem");
             }
         }
     
