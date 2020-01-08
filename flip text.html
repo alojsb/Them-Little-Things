@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>flip text</title>
+</head>
+<body>
+    
+
+    <script>
+
+        // set a string of your choice
+        let origText = "RE:Reuf";
+        let flippedText = flip(origText);
+        console.log(origText);
+        console.log(flippedText);
+    
+        function flip(word) {
+
+            let temp = [];
+
+            for (let i = 0, j = word.length - 1; i < word.length, j >= 0; i++, j--) {
+
+                temp += word[j];
+
+            }
+
+            return temp;
+
+        }
+    
+    </script>
+
+</body>
+</html>
