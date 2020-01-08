@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vigenere Cipher</title>
+
+    <style>
+
+        body{
+            margin: 0;
+            background-color: rgb(228, 181, 159);
+        }
+    
+        .container{
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid grey;
+            background-color: rgb(255, 215, 196);
+        }
+
+        .center-content{
+            text-align: center;
+        }
+
+        .output-div{
+            width: 24%;
+            display: inline-block;
+            padding: 5px 0px;
+            margin: 2px 0px;
+            background-color: rgb(211, 192, 165);
+        }
+
+        .title-text{
+            -webkit-text-stroke: 1px black;
+            color: rgb(211, 179, 75);
+            text-shadow:
+            2px 2px 0 #000,
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;
+            font-size: 60px;
+        }
+
+        input{
+            padding: 4px;
+            margin: 4px;
+        }
+
+        h1{
+            margin: 20px;
+        }
+
+        #infoButton{
+            border: 2px solid rgb(211, 179, 75);;
+            width: 20px;
+            color: rgb(211, 179, 75);;
+            font-weight: bold;
+            border-radius: 7px;
+            text-align: center;
+        }
+
+        #info{
+            position: fixed;
+            background-color: darkslategray;
+            color: whitesmoke;
+            width: 35%;
+            top: 80px;
+            left: 80px;
+            padding: 20px;
+            opacity: 0.85;
+            border-radius: 7px;
+        }
+
+        .hidden{
+            display: none;
+        }
+
+        textarea{
+            margin: 8px 0px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        button{
+            width: 70px;
+            padding: 4px 0px;
+            margin: 4px;
+        }
+
+        @media only screen and (max-width: 900px) {
+            
+            #info{
+                top: 20px;
+                left: 65px;
+                width: 70%;
+                overflow: scroll;
+            }
+
+        }
+
+    </style>
+
+</head>
+<body>
+    
+    <div id="container-encryptionCode" class="container">
+
+        <h1 class="center-content title-text">Vigenere Cipher</h1>
+
+        <div class="center-content">
+            <label for="encryptionCode" id="encryptionCode-label">Enter code number or letter here</label>
+        </div>
+
+        <div class="center-content" class="center-content">
+            <input type="text" id="encryptionCode" class="center-content">
+        </div>
+
+        <div class="center-content">
+            <textarea name="" id="originalText" cols="30" rows="10"></textarea>
+        </div>
+
+        <div class="center-content">
+            <div id="left-pos-div">
+                <button id="submit">Submit</button>
+                <button id="decode">Decode</button>
+                <button id="clear">Clear</button>
+            </div>
+            <div id="center-pos-div">
+                <div id="infoButton">i</div>
+            </div>
+            <div id="right-pos-div">
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id="container-offset" class="container center-content">
+
+        <textarea name="" id="cryptedText" cols="30" rows="10"></textarea>
+
+    </div>
+
+    <div id="info" class="hidden">
+        <h4>Info</h4>
+        <p> Vigenere Ccipher is a way of encrypting a message.
+            <br><br>
+            The way it works is as follows. Enter a code word. Then write something into the text area.
+            Each letter of the code word is used sequentially to define a shift in the alphabet for the encrypted text.
+            Once all letters in the code word have been used, the algorithm loops back to the first letter in the code word,
+            and the cycle repeats until the entire text has been encrypted.
+            <br><br>
+            Only letters are allowed in the code word.
+        </p>
+    </div>
+
+    <script>
+    
+        // variables
+        let encryptionCode = document.getElementById('encryptionCode');
+        let infoButton = document.getElementById('infoButton');
+        let originalText = document.getElementById('originalText');
+        let cryptedText = document.getElementById('cryptedText');
+        let submit = document.getElementById('submit');
+        let decode = document.getElementById('decode');
+        let clear = document.getElementById('clear');
+
+        //let shift;
+
+        // next two event listeners/functions handle the info pop-up window
+        infoButton.addEventListener('mouseover', function () {
+            document.getElementById('info').classList.remove('hidden');
+        });
+
+        infoButton.addEventListener('mouseout', function () {
+            document.getElementById('info').classList.add('hidden');
+        });
+
+        // main event listener function
+        encryptionCode.addEventListener('keyup', function () {
+
+            // delete all letters in crypted text area if original text area or code input area is empty
+            if (encryptionCode.value.length == 0 || originalText.value.length == 0) {
+                    cryptedText.value = "";                   
+            }
+
+            // checks if the user enters char other than letter
+            checkIfAllLettersInString(encryptionCode.value);
+
+            // checks if the input string exceeds 20 letters
+            if (encryptionCode.value.length > 20) {
+                deleteLastChar();
+            }        
+
+        });
+
+        // event listener function on the "Submit" button
+        submit.addEventListener('click', function () {
+
+            let lengthOfCodeWord = encryptionCode.value.length;
+
+            // in case the encryption code is not entered, do nothing
+            if (encryptionCode.value.length != 0) {
+
+                // clear the previously created encrypted text
+                cryptedText.value = "";
+
+                // for the length of original text, shift every letter according to code word
+                
+                let innerIndex = 0;
+
+                for (let i = 0; i < originalText.value.length; i++) {
+
+                    if (isLetter(originalText.value[i])) {
+
+                        console.log(innerIndex + " == " + lengthOfCodeWord);
+                        if (innerIndex == lengthOfCodeWord) {
+
+                            console.log("resetovo innerIndex na 0");
+                            innerIndex = 0;
+
+                        }
+
+                        console.log("poslao innerIndex: " + innerIndex);
+                        cryptedText.value += shift(originalText.value[i], encryptionCode.value[innerIndex]);
+                        innerIndex++;
+
+                    }
+                    else {
+
+                        cryptedText.value += originalText.value[i];
+
+                    }
+                }
+            }
+        });
+
+        // reverse the effect from the submit function 
+        decode.addEventListener('click', function () {
+
+            let lengthOfCodeWord = encryptionCode.value.length;
+            let newCode = "";
+
+            newCode = inverseVigenereCode(encryptionCode.value);
+            
+            // in case the encryption code is not entered, do nothing
+            if (encryptionCode.value.length != 0) {
+
+                // clear the previously created encrypted text
+                cryptedText.value = "";
+
+                let innerIndex = 0;
+                //let storedIndex;
+
+                // // first iterate through the whole text to be encrypted while listing letters from code word
+                // for (let i = 0; i < originalText.value.length; i++) {
+                    
+                //     if (isLetter(originalText.value[i])) {
+                //         if (innerIndex == lengthOfCodeWord) {
+
+                //             innerIndex = 0;
+                            
+
+                //         }
+                //         console.log("slovo: " + originalText.value[i] + ", index: " + innerIndex);
+                //         innerIndex++;
+
+                        
+                //         // store the index of the position where we arrived in the previous step
+                //         //storedIndex = innerIndex;
+                //     }
+                    
+                // }
+
+                for (let i = 0; i < originalText.value.length; i++) {
+
+                    if (isLetter(originalText.value[i])) {
+
+                    //console.log(innerIndex + " == " + lengthOfCodeWord);
+                    if (innerIndex == lengthOfCodeWord) {
+
+                        //console.log("resetovo innerIndex na 0");
+                        innerIndex = 0;
+
+                    }
+
+                    //console.log("poslao innerIndex: " + innerIndex);
+                    cryptedText.value += shift(originalText.value[i], newCode[innerIndex]);
+                    innerIndex++;
+
+                    }
+                    else {
+
+                    cryptedText.value += originalText.value[i];
+
+                    }
+                }
+
+                // flip the code word
+                //let flippedCodeWord = flip(encryptionCode.value);
+
+                // in the flipped code word, start from the index you last arrived at that you stored
+                //flippedCodeWord[encryptionCode.value.length - 1 - storedIndex];
+
+                // for (let i = 0; i < originalText.value.length; i++) {
+
+                //     if (isLetter(originalText.value[i])) {
+
+                //         if (innerIndex == lengthOfCodeWord) {
+
+                //         innerIndex = 0;
+
+                //     }
+
+                //     cryptedText.value += shift(originalText.value[i], encryptionCode.value[innerIndex]);
+                //     innerIndex++;
+
+                //     }
+                //     else {
+
+                //         cryptedText.value += originalText.value[i];
+
+                //     }
+                // }
+            }
+
+        });
+
+        // event listener function on the "Clear" button
+        clear.addEventListener('click', function () {
+
+            originalText.value = "";
+            cryptedText.value = "";
+            encryptionCode.value = "";
+
+        });
+
+        // function flip(word) {
+
+        //     let temp = [];
+            
+        //     for (let i = 0, j = word.length - 1; i < word.length, j > 0; i++, j--) {
+                
+        //         temp[i] = word[j];
+                
+        //     }
+
+        //     return temp;
+
+        // }
+
+        function inverseVigenereCode(str) {
+            
+            let temp = "";
+
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] >= 'A' && str[i] <= 'Z') {
+                    temp += String.fromCharCode(26 - (str[i].charCodeAt(0) - 65) + 65);
+                    console.log(26 - (str[i].charCodeAt(0) - 65));
+                }
+                else {
+
+                    temp += String.fromCharCode(26 - (str[i].charCodeAt(0) - 97) + 97);
+                    console.log(26 - (str[i].charCodeAt(0) - 97));
+                }
+            }
+            console.log('temp: ' + temp);
+            return temp;
+        }
+
+        // checks the code word for non-letters and deletes them
+        function checkIfAllLettersInString(textToCheck) {
+
+            for (let i = 0; i < textToCheck.length; i++) {
+
+                let c = isLetter(textToCheck[i]);
+                console.log(c);
+
+                if (c == false) {
+                    encryptionCode.value = deleteChar(textToCheck, i);
+                }
+
+            }
+
+            return;
+        }
+
+        // deletes last letter if string is longer than 20 characters
+        function deleteLastChar(a) {
+
+            encryptionCode.value = encryptionCode.value.slice(0, -1);
+        }
+
+        // checks if char is a letter
+        function isLetter(a) {
+
+            if (!((a >= 'A' && a <= 'Z') || (a >= 'a' && a <= 'z'))) {
+                return false;
+            }
+            else
+                return true;
+        }
+
+        // deletes a char in a string in given index
+        function deleteChar(str, index) {
+
+            let temp = '';
+            let tempIndex = 0;
+
+            for (let i = 0; i < str.length; i++) {
+
+                if (i == index) {
+                    temp[tempIndex] = str[i];
+                }         
+            }
+
+            // split old string at index of removed char and join rest of string together again
+            str = str.split(str[index]).join(temp);
+
+            return str;
+        }
+
+        // the actual Vigenere Cipher shift of a letter
+        function shift(character, key) {
+
+            let c;
+
+            console.log("slovo koje se mijenja: " + character);
+            console.log("mijenja se pomocu kljuca: " + key);
+
+            // get ASCII code of character
+            let code = character.charCodeAt(0);
+            let keycode;
+
+            if (key >= 'A' && key <= 'Z') {
+                keycode = key.charCodeAt(0) - 65;
+            }
+            else
+                keycode = key.charCodeAt(0) - 97;
+
+            console.log(keycode);
+
+            // // check if uppercase letter
+            // if ((letter >= 'A') && (letter <= 'Z'))
+            //     c = String.fromCharCode(((letter - 65 + key) % 26) + 65);
+
+            // // else check if lowercase letters
+            // else if ((letter >= 'a') && (letter <= 'z'))
+            //     c = String.fromCharCode(((letter - 97 + key) % 26) + 97);
+
+            // check if uppercase letter
+            if ((code >= 65) && (code <= 90))
+                c = String.fromCharCode(((code - 65 + keycode) % 26) + 65);
+
+            // else check if lowercase letters
+            else if ((code >= 97) && (code <= 122))
+                c = String.fromCharCode(((code - 97 + keycode) % 26) + 97);
+
+
+            // let temp = "";
+            // let c;
+
+            // console.log("k in caesar: " + k);
+           
+
+            // // go through each character in original text
+            // for (var i = 0; i < originalText.value.length; i++) {
+
+            //     // get ASCII code of character
+            //     let code = originalText.value.charCodeAt(i);
+
+            //     // check if uppercase letter
+            //     if ((code >= 65) && (code <= 90))
+            //         c = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+
+            //     // else check if lowercase letters
+            //     else if ((code >= 97) && (code <= 122))
+            //         c = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+            //     else
+            //         c = String.fromCharCode(code);
+
+            //     // append letter to new string
+            //     temp += c;
+
+            // }
+
+            // return temp;
+
+            console.log("promijenjeno u slovo: " + c);
+
+            return c;
+        }
+    
+    </script>
+
+</body>
+</html>
