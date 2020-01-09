@@ -201,77 +201,18 @@
         // event listener function on the "Submit" button
         submit.addEventListener('click', function () {
 
-            let lengthOfCodeWord = encryptionCode.value.length;
+            cryptedText.value = vigenere(originalText.value, cryptedText.value, encryptionCode.value);
 
-            // in case the encryption code is not entered, do nothing
-            if (encryptionCode.value.length != 0) {
-
-                // clear the previously created encrypted text
-                cryptedText.value = "";
-
-                // for the length of original text, shift every letter according to code word
-                let codeWordIndex = 0;
-
-                for (let i = 0; i < originalText.value.length; i++) {
-
-                    if (isLetter(originalText.value[i])) {
-
-                        console.log(codeWordIndex + " == " + lengthOfCodeWord);
-                        if (codeWordIndex == lengthOfCodeWord) {
-                            codeWordIndex = 0;
-                        }
-
-                        cryptedText.value += shift(originalText.value[i], encryptionCode.value[codeWordIndex]);
-                        codeWordIndex++;
-
-                    }
-                    else {
-
-                        cryptedText.value += originalText.value[i];
-
-                    }
-                }
-            }
         });
 
         // reverse the effect from the submit function 
         decode.addEventListener('click', function () {
 
-            let lengthOfCodeWord = encryptionCode.value.length;
-            let newCode = "";
+            // "invert" code word to decode text
+            let newCode = inverseVigenereCode(encryptionCode.value);
 
-            newCode = inverseVigenereCode(encryptionCode.value);
+            cryptedText.value = vigenere(originalText.value, cryptedText.value, newCode);
             
-            // in case the encryption code is not entered, do nothing
-            if (encryptionCode.value.length != 0) {
-
-                // clear the previously created encrypted text
-                cryptedText.value = "";
-
-                let codeWordIndex = 0;
-
-                // for the length of original text, shift every letter according to NEW code word
-                for (let i = 0; i < originalText.value.length; i++) {
-
-                    if (isLetter(originalText.value[i])) {
-
-                    if (codeWordIndex == lengthOfCodeWord) {
-
-                        codeWordIndex = 0;
-
-                    }
-
-                    cryptedText.value += shift(originalText.value[i], newCode[codeWordIndex]);
-                    codeWordIndex++;
-
-                    }
-                    else {
-
-                    cryptedText.value += originalText.value[i];
-
-                    }
-                }
-            }
         });
 
         // event listener function on the "Clear" button
@@ -283,10 +224,14 @@
 
         });
 
-        // crucial part - code word is "inverted" letter by letter
-        // what's meant here by "inversion"?
-        // every letter in the initial code word is read,
-        // it's index in the alphabet mirror-flipped and the new letter is added to a new code word
+        /*
+
+        crucial part - code word is "inverted" letter by letter
+        what's meant here by "inversion"?
+        every letter in the initial code word is read,
+        it's index in the alphabet mirror-flipped and the new letter is added to a new code word
+
+        */
         function inverseVigenereCode(str) {
             
             let temp = "";
@@ -305,6 +250,44 @@
             }
 
             return temp;
+        }
+
+        // the actual vigenere letter shift function
+        function vigenere(origStr, encryptedStr, keyword) {
+            
+            let lengthOfKeyword = keyword.length;
+
+            // in case the keyword is not entered, do nothing
+            if (keyword.length != 0) {
+
+                // clear the previously created encrypted text
+                encryptedStr = "";
+
+                // for the length of original text, shift every letter according to keyword
+                let keywordIndex = 0;
+
+                for (let i = 0; i < origStr.length; i++) {
+
+                    if (isLetter(origStr[i])) {
+
+                        if (keywordIndex == lengthOfKeyword) {
+                            keywordIndex = 0;
+                        }
+
+                        encryptedStr += shift(origStr[i], keyword[keywordIndex]);
+                        keywordIndex++;
+
+                    }
+                    else {
+
+                        encryptedStr += origStr[i];
+
+                    }
+                }
+            }
+
+            return encryptedStr;
+
         }
 
         // check the code word for non-letters and delete them
