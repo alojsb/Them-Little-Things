@@ -237,7 +237,8 @@
             let temp = "";
 
             for (let i = 0; i < str.length; i++) {
-                if (str[i] >= 'A' && str[i] <= 'Z') {
+
+                if (isUppercase(str[i])) {
 
                     temp += String.fromCharCode(26 - (str[i].charCodeAt(0) - 65) + 65);
 
@@ -322,6 +323,24 @@
                 return true;
         }
 
+        function isUppercase(a) {
+            if (a >= 'A' && a <= 'Z') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        function isLowercase(a) {
+            if (a >= 'a' && a <= 'z') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
         // delete a char in a string in given index
         function deleteChar(str, index) {
 
@@ -350,18 +369,22 @@
             let code = character.charCodeAt(0);
             let keycode;
 
-            if (key >= 'A' && key <= 'Z') {
+            //if (key >= 'A' && key <= 'Z') {
+            if (isUppercase(key)) {    
                 keycode = key.charCodeAt(0) - 65;
-            }
+            }   
             else
                 keycode = key.charCodeAt(0) - 97;
 
             // check if uppercase letter
-            if ((code >= 65) && (code <= 90))
+            //if ((code >= 65) && (code <= 90))
+            if (isUppercase(character)) {
                 c = String.fromCharCode(((code - 65 + keycode) % 26) + 65);
+            }
 
             // else check if lowercase letters
-            else if ((code >= 97) && (code <= 122))
+            //else if ((code >= 97) && (code <= 122))
+            else
                 c = String.fromCharCode(((code - 97 + keycode) % 26) + 97);
 
             return c;
