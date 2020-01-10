@@ -156,7 +156,7 @@
             <br><br>
             The Submit button is for encoding, the Clear and Decode buttons are self explainatory.
             <br><br>
-            Only letters are allowed in the code word.
+            Only letters are allowed in the code word. The code word input is case-insensitive.
         </p>
     </div>
 
@@ -201,7 +201,6 @@
         // event listener function on the "Submit" button
         submit.addEventListener('click', function () {
 
-            console.log("sent: orig: " + originalText.value + ", crypt: " + cryptedText.value);
             cryptedText.value = vigenere(originalText.value, cryptedText.value, encryptionCode.value);
 
         });
@@ -212,7 +211,6 @@
             // "invert" code word to decode text
             let newCode = inverseVigenereCode(encryptionCode.value);
 
-            console.log("sent: orig: " + originalText.value + ", crypt: " + cryptedText.value);
             cryptedText.value = vigenere(originalText.value, cryptedText.value, newCode);
             
         });
@@ -242,21 +240,31 @@
 
                 if (isUppercase(str[i])) {
 
+                    //  'A' is the only UC letter whose inversion letter is the same as itself
                     if (str[i] == 'A') {
-                        let x = str[i].charCodeAt(0) - 65;
-                        let y = 26 - (str[i].charCodeAt(0) - 65);
-                        let z = (26 - (str[i].charCodeAt(0) - 65)) + 65;
-                        console.log("str[i].charCodeAt(0) - 65 = " + x);
-                        console.log("26 - (str[i].charCodeAt(0) - 65) = " + y);
-                        console.log("(26 - (str[i].charCodeAt(0) - 65)) + 65 = " + z);
-                    }
-                    temp += String.fromCharCode((26 - (str[i].charCodeAt(0) - 65)) + 65);
 
+                        temp += str[i];
+
+                    }
+                    else {
+
+                        temp += String.fromCharCode((26 - (str[i].charCodeAt(0) - 65)) + 65);
+
+                    }
                 }
                 else {
 
-                    temp += String.fromCharCode(26 - (str[i].charCodeAt(0) - 97) + 97);
+                    //  'a' is the only LC letter whose inversion letter is the same as itself
+                    if (str[i] == 'a') {
 
+                        temp += str[i];
+
+                    }
+                    else {
+
+                        temp += String.fromCharCode(26 - (str[i].charCodeAt(0) - 97) + 97);
+
+                    }
                 }
             }
 
@@ -382,27 +390,29 @@
             // get ASCII code of character
             let code = character.charCodeAt(0);
             let keycode;
-            console.log("character to shift: " + character);
-            console.log("shift by: " + key);
 
-            if (isUppercase(key)) {    
+            if (isUppercase(key)) {  
+
                 keycode = key.charCodeAt(0) - 65;
-                console.log("keycode: " + keycode);
+
             }   
             else {
+
                 keycode = key.charCodeAt(0) - 97;
-                console.log("keycode: " + keycode);
+
             }
 
             // check if uppercase letter
             if (isUppercase(character)) {
+
                 c = String.fromCharCode(((code - 65 + keycode) % 26) + 65);
-                console.log("new character: " + c);
+
             }
             // else check if lowercase letters
             else {
+
                 c = String.fromCharCode(((code - 97 + keycode) % 26) + 97);
-                console.log("new character: " + c);
+
             }
 
             return c;
