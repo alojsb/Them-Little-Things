@@ -201,6 +201,7 @@
         // event listener function on the "Submit" button
         submit.addEventListener('click', function () {
 
+            console.log("sent: orig: " + originalText.value + ", crypt: " + cryptedText.value);
             cryptedText.value = vigenere(originalText.value, cryptedText.value, encryptionCode.value);
 
         });
@@ -211,6 +212,7 @@
             // "invert" code word to decode text
             let newCode = inverseVigenereCode(encryptionCode.value);
 
+            console.log("sent: orig: " + originalText.value + ", crypt: " + cryptedText.value);
             cryptedText.value = vigenere(originalText.value, cryptedText.value, newCode);
             
         });
@@ -240,7 +242,15 @@
 
                 if (isUppercase(str[i])) {
 
-                    temp += String.fromCharCode(26 - (str[i].charCodeAt(0) - 65) + 65);
+                    if (str[i] == 'A') {
+                        let x = str[i].charCodeAt(0) - 65;
+                        let y = 26 - (str[i].charCodeAt(0) - 65);
+                        let z = (26 - (str[i].charCodeAt(0) - 65)) + 65;
+                        console.log("str[i].charCodeAt(0) - 65 = " + x);
+                        console.log("26 - (str[i].charCodeAt(0) - 65) = " + y);
+                        console.log("(26 - (str[i].charCodeAt(0) - 65)) + 65 = " + z);
+                    }
+                    temp += String.fromCharCode((26 - (str[i].charCodeAt(0) - 65)) + 65);
 
                 }
                 else {
@@ -264,17 +274,21 @@
                 // clear the previously created encrypted text
                 encryptedStr = "";
 
-                // for the length of original text, shift every letter according to keyword
+                // store index of keyword to be able to control looping through same
                 let keywordIndex = 0;
 
+                // for the length of original text, shift every letter according to keyword
                 for (let i = 0; i < origStr.length; i++) {
 
+                    // only shift letters, spaces and punctuation stay the same
                     if (isLetter(origStr[i])) {
 
+                        // if it reaches end of the keyword, go back to index = 0
                         if (keywordIndex == lengthOfKeyword) {
                             keywordIndex = 0;
                         }
 
+                        // shift the letter by letter-inside-key number of places
                         encryptedStr += shift(origStr[i], keyword[keywordIndex]);
                         keywordIndex++;
 
@@ -368,24 +382,28 @@
             // get ASCII code of character
             let code = character.charCodeAt(0);
             let keycode;
+            console.log("character to shift: " + character);
+            console.log("shift by: " + key);
 
-            //if (key >= 'A' && key <= 'Z') {
             if (isUppercase(key)) {    
                 keycode = key.charCodeAt(0) - 65;
+                console.log("keycode: " + keycode);
             }   
-            else
+            else {
                 keycode = key.charCodeAt(0) - 97;
-
-            // check if uppercase letter
-            //if ((code >= 65) && (code <= 90))
-            if (isUppercase(character)) {
-                c = String.fromCharCode(((code - 65 + keycode) % 26) + 65);
+                console.log("keycode: " + keycode);
             }
 
+            // check if uppercase letter
+            if (isUppercase(character)) {
+                c = String.fromCharCode(((code - 65 + keycode) % 26) + 65);
+                console.log("new character: " + c);
+            }
             // else check if lowercase letters
-            //else if ((code >= 97) && (code <= 122))
-            else
+            else {
                 c = String.fromCharCode(((code - 97 + keycode) % 26) + 97);
+                console.log("new character: " + c);
+            }
 
             return c;
         }
