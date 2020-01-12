@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>the birthday problem</title>
+    <style>
+    
+        .smol{
+            color: rgb(172, 106, 32);
+        }
+    
+    </style>
+
+</head>
+<body>
+
+    <h2>The birthday problem</h2>
+
+    <p>In probability theory, the birthday problem or birthday paradox concerns the probability that,
+        in a set of n randomly chosen people, some pair of them will have the same birthday.
+        By the pigeonhole principle, the probability reaches 100% when the number of people reaches 367
+        (since there are only 366 possible birthdays, including February 29).
+        However, 99.9% probability is reached with just 70 people, and 50% probability with 23 people.
+        These conclusions are based on the assumption that each day of the year (excluding February 29)
+        is equally probable for a birthday.</p>
+
+    <p>Check the Console in the Developers Tools.<br>
+    Press F12 <span class="smol">or</span>  Ctrl + Shift + i <span class="smol">or</span> right-click - > Inspect - > Console</p>
+    
+    <script>
+
+        // set number of people in group and number of such groups
+        // Can touch this ----------------------------- //
+        let numberOfPeople = 23;
+        let experiments = 100;
+        // Can touch this ----------------------------- //
+        
+        // Can't touch this ----------------------------- //
+        let february = 28;
+        let shortMonth = 30;
+        let longMonth = 31;
+        let months = 12;
+        let day;
+        let birthdays = [];
+        let comparisons = 0;
+        let DoB1;
+        let DoB2;
+        let DoB1Index;
+        let DoB2Index;
+        let positiveOutcome = 0;
+        let negativeOutcome = 0;
+        let result;
+
+        function assignBirthdays(quantity) {
+
+            for (let i = 0; i < quantity; i++) {
+
+                //pick month of birth
+                let month = random(months);
+                //pick day of birth
+                if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+                    day = random(longMonth);
+                }
+                else if (month == 4 || month == 6 || month == 9 || month == 11) {
+                    day = random(shortMonth);
+                }
+                else {
+                    day = random(february);
+                }
+
+                // put all together into format dd.mm.
+                birthdays[i] = day + "." + month + ".";
+                console.log(i + ". " + birthdays[i]);
+                }
+        }
+
+        function random(n) {
+            return Math.floor(Math.random() * n + 1);
+        }
+
+        // return true if there are matching elements in array
+        function matchingElementsInArray(arr) {
+            
+            for (let i = 0; i < arr.length - 1; i++) {
+
+                for (let j = i + 1; j < arr.length; j++) {
+
+                    comparisons++;
+
+                    if (arr[i] == arr[j]) {
+                        
+                        DoB1 = arr[i];
+                        DoB2 = arr[j];
+                        DoB1Index = i;
+                        DoB2Index = j;
+ 
+                        return true;
+                    }
+                    
+                }
+            }
+            return false;
+        }
+
+        function main() {
+
+            // code for experiment on a number of groups -------------- UPPER BLOCK ---------------------------------------------- //
+            // comment the lower block of code in the main function if you want to use this block of code //
+
+            // iterate through groups [experiments] times
+            for (let i = 0; i < experiments; i++) {
+                
+                console.log("Group No. " + (i + 1));
+                assignBirthdays(numberOfPeople);
+                result = matchingElementsInArray(birthdays);
+
+                if (result) {
+                    positiveOutcome++;
+                }
+                else {
+                    negativeOutcome++;
+                }
+            }
+
+            console.log("Found matching birthdays in " + positiveOutcome + " cases.");
+            console.log("Found NO matches in " + negativeOutcome + " cases.");
+            console.log("Occurrence of matching birthdays within a group of " + numberOfPeople + " was " + (positiveOutcome/(positiveOutcome + negativeOutcome) * 100.00).toFixed(2) + "%.");
+            
+
+            // code for experiment on a single group -------------------- LOWER BLOCK ---------------------------------------- //
+            // comment the upper block of code in the main function if you want to use this block of code //
+
+            // // assign birthdays to one group of [numberofpeople] people
+            // assignBirthdays(numberOfPeople);
+
+            // // return true if there are people with matching birthdays
+            // let result = matchingElementsInArray(birthdays);
+            // console.log("There are matching birthdays? " + result);
+            // console.log("Number of comparisons made: " + comparisons);
+
+            // if (result) {
+
+            //     console.log("match found: " + DoB1 + ", " + DoB2);
+            //     console.log("Match found in indexes: " + DoB1Index + ", " + DoB2Index);
+            // }
+        }
+
+        main();
+        
+
+    
+    </script>
+
+</body>
+</html>
