@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>tetris</title>
+
+    <style>
+
+        body{
+            margin: 16px;
+            background-color: black;
+        }
+
+        .main-container{
+            display: grid;
+            grid-template-columns: auto auto auto;
+            grid-column-gap: 16px;
+        }
+    
+        .main-division{
+            border: 1px solid red;
+        }
+
+        #board{
+            display: grid;
+        }
+
+    
+    </style>
+
+
+</head>
+<body>
+    
+    <div id="" class="main-container">
+        <div class="main-division"></div>
+        <div id="board" class="main-division"></div>
+        <div class="main-division"></div>
+    </div>
+
+    <script>
+    
+        // variables for catching html elements
+        let mainDivisionHeight = document.getElementsByClassName('main-division');
+        let board = document.getElementById('board');
+        let boardMatrix = [];
+
+        // board grid - number of columns and rows
+        let boardWidth = 10;
+        let boardHeight = 20;
+
+        // iterate through htmlCollection to set height for elements
+        for (let i = 0; i < mainDivisionHeight.length; i++) {
+            mainDivisionHeight[i].style.height = (window.innerHeight * 0.9) + "px";            
+        }
+
+        // set-up the grid inside the board
+        board.style.gridTemplateColumns = "repeat(" + boardWidth + ", 1fr)";
+
+        // creation of board elements for display of tetrominos
+        for (let i = 0; i < boardHeight; i++) {
+            for (let j = 0; j < boardWidth; j++) {
+                let temp = document.createElement("div");
+                temp.setAttribute('id', 'q-' + i + '-' + j);
+                board.appendChild(temp);
+            }
+        }
+
+        console.log(boardMatrix);
+
+        for (let i = 0; i < boardHeight; i++) {
+            boardMatrix[i] = [];
+            for (let j = 0; j < boardWidth; j++) {
+                boardMatrix[i][j] = 0;
+            }
+        }
+
+        function tetrominoS(x, y) {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                
+                    if (i != 0) {
+                        if (i + j == 2 || i + j == 3) {
+                            boardMatrix[x + i][y + j] = 's';
+                        }
+                    }
+                }
+            }
+        }
+
+        function colorTetromino() {
+            for (let i = 0; i < boardHeight; i++) {
+                for (let j = 0; j < boardWidth; j++) {
+                    if (boardMatrix[i][j] == 's') {
+                        colorRed(i, j);
+                    }
+                }
+            }
+        }
+
+        function colorRed(a, b) {
+            document.getElementById('q-' + a + '-' + b).style.backgroundColor = "red";
+        }
+
+        tetrominoS(17, 4);
+        colorTetromino();
+
+    
+    </script>
+
+</body>
+</html>
