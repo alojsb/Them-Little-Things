@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Civilization Style Graphics</title>
+    <style>
+    
+        #myCanvas{
+            border: 1px solid black;
+        }
+    
+    </style>
+</head>
+<body>
+
+    <canvas id="myCanvas" width="50px" height="50px"> <!-- both dimensions have to be a multiple of a block width/height -->
+        Your browser does not support Canvas.   <!-- shows only if the browser doesn't support the Canvas tag -->
+    </canvas>
+
+    <script>
+
+    // catch canvas element and set draw context
+    var c = document.getElementById("myCanvas");
+    var context = c.getContext("2d");
+
+    // set width/height of a single block and map size
+    const blockSize = 33;
+    const mapWidth = 40;
+    const mapHeight = 20;
+
+    // calculate the canvas size based on variables above
+    c.width = blockSize * mapWidth;
+    c.height = blockSize * mapHeight;
+    
+    // create ImageData objects (map blocks)
+    let grassBlock = context.createImageData(blockSize, blockSize);
+    let grassPix = grassBlock.data;
+
+    let oceanBlock = context.createImageData(blockSize, blockSize);
+    let oceanPix = oceanBlock.data;
+
+    let desertBlock = context.createImageData(blockSize, blockSize);
+    let desertPix = desertBlock.data;
+
+    let mountainBlock = context.createImageData(blockSize, blockSize);
+    let mountainPix = mountainBlock.data;
+
+    let iceBlock = context.createImageData(blockSize, blockSize);
+    let icePix = iceBlock.data;
+
+    // set map matrix
+    let mapMatrix = [
+        [0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 4, 0, 4, 4, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 4, 4, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 1, 1, 3, 1, 1, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0],
+        [0, 0, 0, 1, 3, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 3, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 2, 3, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 3, 3, 3, 2, 2, 1, 1, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 2, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 3, 0, 1, 2, 3, 1, 3, 3, 3, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 2, 1, 1, 1, 1, 3, 1, 1, 0, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 2, 0, 2, 2, 2, 2, 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 3, 1, 1, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 3, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+
+    // loop over each pixel and set colors of whole block
+    function drawBlock(type, pix, a, b, c, d, e, f, g, h) {
+
+        for (var i = 0; n = pix.length, i < n; i += 4) {
+
+            // draw first color
+            if (type == "flat" && (i % 12 || i % 16)) {
+
+                pix[i] = a;    // red channel
+                pix[i + 1] = b;   // green channel
+                pix[i + 2] = c;  // blue channel
+                pix[i + 3] = d;  // alpha channel
+
+            }
+            else if (type == "elevated" && (i % 24 && i % 32)) {
+
+                pix[i] = a;    // red channel
+                pix[i + 1] = b;   // green channel
+                pix[i + 2] = c;  // blue channel
+                pix[i + 3] = d;  // alpha channel
+
+            }
+            // draw second color
+            else {
+
+                pix[i] = e; // red channel
+                pix[i + 1] = f;   // green channel
+                pix[i + 2] = g;  // blue channel
+                pix[i + 3] = h; // alpha channel
+
+            }
+        }
+    }
+
+    // loop through matrix to draw set blocks on canvas
+    for (let i = 0; i < mapHeight; i++) {
+        for (let j = 0; j < mapWidth; j++) {
+            
+            if (mapMatrix[i][j] == 0) {
+                //ocean();
+                drawBlock("flat", oceanPix, 0, 120, 255, 255, 120, 120, 255, 255);
+                context.putImageData(oceanBlock, blockSize * j, blockSize * i);
+            }
+            else if (mapMatrix[i][j] == 1) {
+                //grass();
+                drawBlock("flat", grassPix, 0, 255, 0, 255, 120, 120, 0, 255);
+                context.putImageData(grassBlock, blockSize * j, blockSize * i);
+            }
+            else if (mapMatrix[i][j] == 2) {
+                //desert();
+                drawBlock("flat", desertPix, 240, 228, 176, 255, 217, 192, 100, 255);
+                context.putImageData(desertBlock, blockSize * j, blockSize * i);
+            }
+            else if (mapMatrix[i][j] == 3) {
+                //mountain();
+                drawBlock("elevated", mountainPix, 185, 122, 27, 255, 99, 99, 99, 255);
+                context.putImageData(mountainBlock, blockSize * j, blockSize * i);
+            }
+            else if (mapMatrix[i][j] == 4) {
+                //mountain();
+                drawBlock("flat", icePix, 231, 241, 245, 255, 153, 217, 234, 255);
+                context.putImageData(iceBlock, blockSize * j, blockSize * i);
+            }
+        }
+    }
+    
+    </script>
+
+</body>
+</html>
