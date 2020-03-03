@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>clickable shapes</title>
+    <style>
+    
+        #myCanvas{
+            border: 1px solid red;
+        }
+    
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="500" height="500">
+        Your browser does not support canvas.
+    </canvas>
+    <script>
+    
+        let myCanvas = document.getElementById("myCanvas");
+        let c = myCanvas.getContext("2d");
+
+        //let myCanv2 = document.getElementById("");
+
+        function drawPolygon(e) {
+            c.beginPath();
+            c.moveTo(50, 50);
+            c.lineTo(50, 75);
+            c.lineTo(98, 65);
+            c.closePath();
+
+            if (e) {
+
+                let x = e.clientX - 8;
+                let y = e.clientY - 8;
+                
+                if (c.isPointInPath(e.clientX, e.clientY)) {
+                    c.strokeStyle = "red";
+                }
+                else {
+                    c.strokeStyle = "black";
+                }
+            }
+            c.stroke();
+        }
+
+        drawPolygon();
+
+        myCanvas.addEventListener("click", drawPolygon);
+    
+    </script>
+</body>
+</html>

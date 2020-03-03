@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>clickable shapes</title>
+    <style>
+    
+        #myCanvas{
+            border: 1px solid red;
+        }
+    
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500">
+        Your browser does not support canvas.
+    </canvas>
+    <script>
+    
+    const canvas = document.getElementById("canvas");
+    const cx = canvas.getContext("2d");
+
+// var ar = {
+//   "vertices": [
+//   [{ "x": 15, "y": 5 }, { "x": 28, "y": 2 }, { "x": 37, "y": 49 }, { "x": 24, "y": 51 }],
+//   [{ "x": 106, "y": 5 }, { "x": 252, "y": 3 }, { "x": 252, "y": 36 }, { "x": 106, "y": 38 }],
+//   [{ "x": 16, "y": 40 }, { "x": 296, "y": 41 }, { "x": 296, "y": 100 }, { "x": 16, "y": 99 }],
+//   [{ "x": 26, "y": 123 }, { "x": 255, "y": 124 }, { "x": 255, "y": 239 }, { "x": 26, "y": 238 }],
+//   [{ "x": 106, "y": 376 }, { "x": 255, "y": 375 }, { "x": 255, "y": 393 }, { "x": 106, "y": 394 }]]
+// };
+
+function drawpolygon(e) {
+    console.log(e);
+  let x, y;
+
+if (e) {
+  x = e.clientX - 8;
+  y = e.clientY - 8;
+    
+}
+
+  // Only try to hit detect if there was a click
+//   if (e) {
+//     // Localize the click to within the canvas
+//     const {clientX, clientY, currentTarget} = e;
+//     const {left, top} = currentTarget.getBoundingClientRect();
+//     x = clientX - left;
+//     y = clientY - top;
+//   }
+
+  // Clear the canvas
+  cx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Iterate all the polygons
+        cx.beginPath();
+        cx.moveTo(50, 50);
+        cx.lineTo(50, 75);
+        cx.lineTo(98, 65);
+
+      cx.closePath();
+
+      // Paint green if the click was in the path, red otherwise
+      cx.strokeStyle = cx.isPointInPath(x, y) ? "green" : "red";
+      //cx.lineWidth = "1.5";
+      cx.stroke();
+
+}
+
+// Draw immediately for reference
+drawpolygon();
+// Draw again whenever we click
+canvas.addEventListener("click", drawpolygon);
+    
+    </script>
+</body>
+</html>
