@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minchi Blanket</title>
+    <style>
+
+        #blanket{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid darkblue;
+        }
+
+        #outer-trim{
+            /* border: 1px solid darkgoldenrod; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #middle-trim{
+            /* border: 1px solid darkgoldenrod; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #inner-trim{
+            /* border: 1px solid orangered; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #blanket-core{
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .squares{
+            width: 100px;
+            height: 100px;
+            /* border: 1px solid green; */
+        }
+
+        #commands{
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .colorPaletteElements{
+            border: 1px solid green;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="blanket"></div>
+    <div id="commands"></div>
+
+    <script>
+
+        // base variables
+        let ifBorders = 0; // if borders are present, then value is 2
+        let squareSide = 55;
+        let trimWidth = Math.round(squareSide / 5);
+        let coreWidth = 5 * (squareSide + ifBorders);
+        let coreHeight = 8 * (squareSide + ifBorders);
+        let innerTrimWidth = coreWidth + 2 * trimWidth;
+        let innerTrimHeight = coreHeight + 2 * trimWidth;
+        let middleTrimWidth = innerTrimWidth + 2 * trimWidth;
+        let middleTrimHeight = innerTrimHeight + 2 * trimWidth;
+        let outerTrimWidth = middleTrimWidth + 2 * trimWidth;
+        let outerTrimHeight = middleTrimHeight + 2 * trimWidth;
+
+        // set background colors
+        //let bc1 = "rgb (0, 109, 108)";
+        let bc1 = "#006d6c";
+        // let bc2 = "rgb (95, 255, 207)";
+        let bc2 = "#5fffcf";
+        // let bc3 = "rgb (191, 209, 255)";
+        let bc3 = "#bfd1ff";
+        // let bc4 = "rgb (255, 254, 145)";
+        let bc4 = "#fffe91"
+        // let bc5 = "rgb (229, 170, 164)";
+        let bc5 = "#e5aaa4";
+        // let bc6 = "rgb (211, 80, 130)";
+        let bc6 = "#d35082";
+        let rand = 0;
+        let activeColor = 0;
+
+        // catches blanket (container div)
+        let blanket = document.getElementById("blanket");
+
+        // creates outer trim of blanket
+        let outerTrim = document.createElement("div");
+        outerTrim.style.width = outerTrimWidth + "px";
+        outerTrim.style.height = outerTrimHeight + "px";
+        outerTrim.setAttribute("id", "outer-trim");
+        rand = Math.floor(Math.random() * 6 + 1);
+        outerTrim.style.backgroundColor = setBackgroundColor(rand);
+        // append to parent element (blanket)
+        blanket.appendChild(outerTrim);
+
+        // creates middle trim of blanket
+        let middleTrim = document.createElement("div");
+        middleTrim.style.width = middleTrimWidth + "px";
+        middleTrim.style.height = middleTrimHeight + "px";
+        middleTrim.setAttribute("id", "middle-trim");
+        rand = Math.floor(Math.random() * 6 + 1);
+        middleTrim.style.backgroundColor = setBackgroundColor(rand);
+        // append to parent element (outerTrim)
+        outerTrim.appendChild(middleTrim);
+
+        // creates inner trim of blanket
+        let innerTrim = document.createElement("div");
+        innerTrim.style.width = innerTrimWidth + "px";
+        innerTrim.style.height = innerTrimHeight + "px";
+        innerTrim.setAttribute("id", "inner-trim");
+        rand = Math.floor(Math.random() * 6 + 1);
+        innerTrim.style.backgroundColor = setBackgroundColor(rand);
+        // append to parent element (middleTrim)
+        middleTrim.appendChild(innerTrim);
+        
+
+        // creates blanket core with 40 squares inside in a 5 x 8 grid
+        let blanketCore = document.createElement("div");
+        blanketCore.style.width = coreWidth + "px";
+        blanketCore.setAttribute("id", "blanket-core");
+        // append to parent
+        innerTrim.appendChild(blanketCore);
+
+        // creates 40 squares
+        for (let i = 1; i < 41; i++) {
+
+            let tempSq = document.createElement("div");
+            tempSq.style.width = squareSide + "px";
+            tempSq.style.height = squareSide + "px";
+            blanketCore.appendChild(tempSq);
+            rand = Math.floor(Math.random() * 6 + 1);
+            tempSq.style.backgroundColor = setBackgroundColor(rand);
+            //setBackgroundColor(tempSq);
+
+            // adds class 'squares' to square
+            tempSq.classList.add("squares");
+            tempSq.setAttribute("id", "square-" + i);
+        }
+
+        function setBackgroundColor(numb) {
+
+            let placeholder;
+            switch (numb) {
+                case 1:
+                    placeholder = bc1;
+                    break;
+                case 2:
+                    placeholder = bc2;
+                    break;
+                case 3:
+                    placeholder = bc3;
+                    break;
+                case 4:
+                    placeholder = bc4;
+                    break;
+                case 5:
+                    placeholder	= bc5;
+                    break;
+                case 6:
+                    placeholder = bc6;
+                    break;
+            
+                default:
+                    break;
+            }
+            return placeholder;
+        }
+
+
+        // catch commands panel
+        let commands = document.getElementById("commands");
+
+        // create 6 divs for set colors
+        for (let i = 1; i < 7; i++) {
+
+            let tempPalette = document.createElement("div");
+            tempPalette.style.width = squareSide+ "px";
+            tempPalette.style.height = squareSide + "px";
+            tempPalette.classList.add("colorPaletteElements");
+            tempPalette.setAttribute("id", "palette-" + i);
+            commands.appendChild(tempPalette);
+            tempPalette.style.backgroundColor = setBackgroundColor(i);
+        }
+
+        // check for user activity anywhere on the blanket
+        outerTrim.addEventListener("click", function (e) {
+            
+            e.target.style.backgroundColor = setBackgroundColor(activeColor);
+        });
+
+        // check for user selection of active color
+        commands.addEventListener("click", function (e) {
+            
+            clearSelectionOnPalettes();
+
+            // takes element id in textual form and shaves of all non-digits
+            let textualID = e.target.id.replace(/[^0-9]/g, "");
+            // parses number in string form into integer
+            activeColor = parseInt(textualID);
+            e.target.style.outline = "thick solid #ff0000";
+        });
+
+        // clear all selection on palettes
+        function clearSelectionOnPalettes() {
+            
+            for (let i = 1; i < 7; i++) {
+    
+                document.getElementById("palette-" + i).style.outline = "";
+            }
+        }
+
+
+    </script>
+
+</body>
+</html>
